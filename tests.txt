@@ -1,0 +1,19 @@
+
+
+make Card_public_tests.exe
+./Card_public_tests.exe
+
+make Card_tests.exe
+./Card_tests.exe
+
+make Pack_public_tests.exe
+./Pack_public_tests.exe
+
+make Pack_tests.exe
+./Pack_tests.exe
+
+make Player_public_tests.exe
+./Player_public_tests.exe
+
+make Player_tests.exe
+./Player_tests.exe

@@ -42,6 +42,22 @@ TEST(test_card_ctor) {
     ASSERT_EQUAL(SPADES, c5.get_suit(SPADES));
 }
 
+
+TEST(test_face_or_ace) {
+    Card c(ACE, HEARTS);
+    Card c2(JACK, HEARTS);
+    Card c3(KING, SPADES);
+    Card c4(QUEEN, CLUBS);
+    Card c5(NINE, SPADES);
+    Card c6(TEN, CLUBS);
+    ASSERT_TRUE(c.is_face_or_ace());
+    ASSERT_TRUE(c2.is_face_or_ace());
+    ASSERT_TRUE(c3.is_face_or_ace());
+    ASSERT_TRUE(c4.is_face_or_ace());
+    ASSERT_FALSE(c5.is_face_or_ace());
+    ASSERT_FALSE(c6.is_face_or_ace());
+}
+
 TEST(test_card_self_comparison) {
     Card three_spades = Card(THREE, SPADES);
     Card four_spades = Card(FOUR, HEARTS);
@@ -90,6 +106,7 @@ TEST(test_Card_less_self) {
     Card ace_hearts = Card(ACE, HEARTS);
     Card jack_clubs = Card(JACK, CLUBS);
     Card jack_spades = Card(JACK, SPADES);
+
     ASSERT_FALSE(Card_less(three_spades, three_spades, CLUBS));
     ASSERT_TRUE(Card_less(three_spades, three_hearts, HEARTS));
     ASSERT_TRUE(Card_less(three_spades, four_hearts, CLUBS));

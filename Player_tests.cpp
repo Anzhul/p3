@@ -301,22 +301,15 @@ Player * p4 = Player_factory("p4", "Simple");
 }
 
 TEST(test_simple_player_play_card) {
-  // Bob's hand
+
   Player * bob = Player_factory("Bob", "Simple");
   bob->add_card(Card(NINE, SPADES));
   bob->add_card(Card(TEN, SPADES));
   bob->add_card(Card(QUEEN, SPADES));
   bob->add_card(Card(KING, SPADES));
   bob->add_card(Card(ACE, SPADES));
-
-  // Bob plays a card
   Card nine_diamonds(NINE, DIAMONDS);
-  Card card_played = bob->play_card(
-    nine_diamonds,  // Nine of Diamonds is led
-    HEARTS    // Trump suit
-  ); 
-
-  // Verify the card Bob played
+  Card card_played = bob->play_card(nine_diamonds,HEARTS); 
   ASSERT_EQUAL(card_played, Card(NINE, SPADES));
   delete bob;
 
@@ -327,13 +320,10 @@ TEST(test_simple_player_play_card) {
   p1->add_card(Card(QUEEN, SPADES));
   p1->add_card(Card(KING, SPADES));
   p1->add_card(Card(ACE, SPADES));
-
-  Card card_played2 = p1->play_card(nine_diamonds, SPADES); 
-
-  ASSERT_EQUAL(card_played2, Card(NINE, SPADES));
+  Card nine_spades(NINE, SPADES);
+  Card card_played2 = p1->play_card(nine_spades, SPADES); 
+  ASSERT_EQUAL(card_played2, Card(ACE, SPADES));
   delete p1;
-
-
 
   Player * p2 = Player_factory("p2", "Simple");
   p2->add_card(Card(NINE, SPADES));
@@ -341,10 +331,29 @@ TEST(test_simple_player_play_card) {
   p2->add_card(Card(QUEEN, SPADES));
   p2->add_card(Card(JACK, CLUBS));
   p2->add_card(Card(JACK, SPADES));
-
-  Card cardplayed3 = p2->play_card(nine_diamonds, SPADES); 
-  ASSERT_EQUAL(cardplayed3, Card(NINE, SPADES));
+  Card cardplayed3 = p2->play_card(nine_spades, SPADES); 
+  ASSERT_EQUAL(cardplayed3, Card(JACK, SPADES));
   delete p2;
+  
+  Player * p25 = Player_factory("p2", "Simple");
+  p25->add_card(Card(NINE, SPADES));
+  p25->add_card(Card(TEN, SPADES));
+  p25->add_card(Card(QUEEN, SPADES));
+  p25->add_card(Card(ACE, SPADES));
+  p25->add_card(Card(JACK, CLUBS));
+  Card cardplayed25 = p2->play_card(nine_spades, SPADES); 
+  ASSERT_EQUAL(cardplayed25, Card(JACK, CLUBS));
+  delete p25;
+
+  Player * p26 = Player_factory("p2", "Simple");
+  p26->add_card(Card(NINE, SPADES));
+  p26->add_card(Card(TEN, SPADES));
+  p26->add_card(Card(QUEEN, SPADES));
+  p26->add_card(Card(ACE, SPADES));
+  p26->add_card(Card(JACK, CLUBS));
+  Card cardplayed26 = p2->play_card(nine_spades, HEARTS); 
+  ASSERT_EQUAL(cardplayed26, Card(ACE, SPADES));
+  delete p26;
 
   Player * p3 = Player_factory("p3", "Simple");
   p3->add_card(Card(NINE, SPADES));
@@ -352,7 +361,6 @@ TEST(test_simple_player_play_card) {
   p3->add_card(Card(QUEEN, DIAMONDS));
   p3->add_card(Card(JACK, HEARTS));
   p3->add_card(Card(JACK, DIAMONDS));
-
   Card king_diamonds(KING, DIAMONDS);
   Card cardplayed4 = p3->play_card(king_diamonds, CLUBS); 
   ASSERT_EQUAL(cardplayed4, Card(QUEEN, DIAMONDS));
@@ -377,7 +385,7 @@ TEST(test_simple_player_play_card) {
   p5->add_card(Card(ACE, DIAMONDS));
   Card jack_diamonds(JACK, DIAMONDS);
   Card cardplayed6 = p5->play_card(jack_diamonds, HEARTS); 
-  ASSERT_EQUAL(cardplayed6, Card(ACE, DIAMONDS));
+  ASSERT_EQUAL(cardplayed6, Card(NINE, DIAMONDS));
   delete p5;
 }
 

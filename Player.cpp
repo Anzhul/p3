@@ -123,14 +123,15 @@ public:
         Card play;
         bool have_suit = false;
         for (int i = 0; i < this -> hand.size(); i++){
-            if (this -> hand[i].get_suit() == led_card.get_suit()){
+            if (this -> hand[i].get_suit(trump) == led_card.get_suit(trump)){
                 have_suit  = true;
                 play = this->hand[i];
             }
         }
         if (have_suit == true){
             for (int i = 0; i < this -> hand.size(); i++){
-                if (this->hand[i] > play && this -> hand[i].get_suit() == led_card.get_suit()){
+                if (Card_less(play, this->hand[i], trump) && 
+                this -> hand[i].get_suit(trump) == led_card.get_suit(trump)){
                     play = this -> hand[i];
                 }
             }

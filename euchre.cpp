@@ -105,25 +105,25 @@ class Game {
   //Deals cards 
   void deal(){
     //Identify dealer
-    this->dealer = 0;
+    this->dealer = 2;
     //Begin with player to the left of them
     for(int i = 0; i< 8; i++){
       if ((i%2 == 0 && i<4) || (i%2 == 1 && i>=4)){
-        //cout << 3 << " ";
+      cout << 3 << " ";
         this->players[(this->dealer+1+i)%4]->add_card(this->pack.deal_one());
         this->players[(this->dealer+1+i)%4]->add_card(this->pack.deal_one());
         this->players[(this->dealer+1+i)%4]->add_card(this->pack.deal_one());
       }
       else if ((i%2 == 1 && i<4) || (i%2 == 0 && i>=4)){
-        //cout << 2 << " ";
+        cout << 2 << " ";
         this->players[(this->dealer+1+i)%4]->add_card(this->pack.deal_one());
         this->players[(this->dealer+1+i)%4]->add_card(this->pack.deal_one());
       }
-      //cout << "player: " << (dealer + 1 + i)%4 << endl; 
+      cout << "player: " << (this->dealer + 1 + i)%4 << endl; 
     }
     for(int i = 0; i< 4; i++){
-      //cout << "player" << i+1 << ": " << endl;
-      //this->players[i]->show_cards();
+      cout << "player" << i << ": " << endl;
+      this->players[i]->show_cards();
     }
   };   
   //Round to determine who gets trump
@@ -132,19 +132,31 @@ class Game {
     this->trump = upcard.get_suit();
     cout << "upcard: " << this->trump << endl;
     this->round = 1;
-    int i = 0;
-    while(!this->players[(this->dealer+1+i)%4]->make_trump(upcard, true, this->round, this->trump))
-    {
-      cout << (this->dealer+1+i)%4 << endl;
-      if(i> 3){
-        this->round= 2;
+    int i = 0;\
+    for (int i = 0; i < 8; i++){
+      if(i > 3){
+        this->round = 2;
       }
-      if (i>= 7){
-        return;
+      bool is_dealer;
+      if ((this->dealer+1+i)%4 == this->dealer){
+        is_dealer = true;
       }
-      i++;
+      else{
+        is_dealer = false;
+      }
+      if (this->players[(this->dealer+1+i)%4]->make_trump(upcard, is_dealer, this->round, this->trump)){
+        if (this->round == 1){
+          this->players[this->dealer]->add_and_discard(upcard);
+        }
+        cout << (this->dealer+1+i)%4 << this->round << endl;
+        break; 
+      }
     }
-    cout << this->trump;
+    cout << "trump suit: " << this->trump << endl;
+    /*for(int i = 0; i< 4; i++){
+      cout << "player" << i << ": " << endl;
+      this->players[i]->show_cards();
+    }*/
     if ((this->dealer+1+i)%4 == 0 || (this->dealer+1+i)%4 == 2){
       this->order_up = 02;
     }

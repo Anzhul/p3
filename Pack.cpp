@@ -35,8 +35,8 @@ Pack::Pack(std::istream& pack_input)
 Card Pack::deal_one(){
     this->next++;
     //delete this
-    this->count1++;
-    cout<< this->count1<< endl;
+    //this->count1++;
+    //cout<< this->count1<< endl;
     //delete this
     return this->cards[next-1];
 

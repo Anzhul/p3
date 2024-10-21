@@ -57,7 +57,7 @@ class Game {
         trick();
       } 
       this->hand++;
-      if (dealer >= 4){
+      if (dealer >= 3){
         dealer = 0;
       }
       else{
@@ -69,12 +69,17 @@ class Game {
       delete players[i]; 
     }*/
     deal();
+    make_trump();
+    for (int i = 0; i<5; i++){
+      trick();
+    }
   this->dealer = 0;
   this->trick1 = 0;
   this->trick2 = 0;
-  this->score1 = 0;
-  this->score2 = 0; 
+  this->score0_2 = 0;
+  this->score1_3 = 0; 
   this->hand = 0;
+  this->order_up = 0;
   }
 
   private:   
@@ -84,10 +89,14 @@ class Game {
   int dealer = 0;
   int trick1 = 0;
   int trick2 = 0;
-  int score1 = 0;
-  int score2 = 0; 
+  int score0_2 = 0;
+  int score1_3 = 0; 
   int hand = 0;
+  int round = 1;
+  int order_up;
   bool shuf;
+  Card upcard;
+  Suit trump;
   //Shuffles Deck
   void shuffle(){
     cout << "shuffling deck" << endl;
@@ -96,7 +105,7 @@ class Game {
   //Deals cards 
   void deal(){
     //Identify dealer
-    this->dealer = 2;
+    this->dealer = 0;
     //Begin with player to the left of them
     for(int i = 0; i< 8; i++){
       if ((i%2 == 0 && i<4) || (i%2 == 1 && i>=4)){
@@ -110,24 +119,46 @@ class Game {
         this->players[(this->dealer+1+i)%4]->add_card(this->pack.deal_one());
         this->players[(this->dealer+1+i)%4]->add_card(this->pack.deal_one());
       }
-      //cout << (dealer + 1 + i)%4 << endl; 
-      this->pack.deal_one();
+      //cout << "player: " << (dealer + 1 + i)%4 << endl; 
     }
     for(int i = 0; i< 4; i++){
-      cout << "player" << i << ": " << endl;
-      this->players[i]->show_cards();
+      //cout << "player" << i+1 << ": " << endl;
+      //this->players[i]->show_cards();
     }
   };   
   //Round to determine who gets trump
   void make_trump(){
-    cout << "making trump" << endl;
-  };   
+    Card upcard = this->pack.deal_one();
+    this->trump = upcard.get_suit();
+    cout << "upcard: " << this->trump << endl;
+    this->round = 1;
+    int i = 0;
+    while(!this->players[(this->dealer+1+i)%4]->make_trump(upcard, true, this->round, this->trump))
+    {
+      cout << (this->dealer+1+i)%4 << endl;
+      if(i> 3){
+        this->round= 2;
+      }
+      if (i>= 7){
+        return;
+      }
+      i++;
+    }
+    cout << this->trump;
+    if ((this->dealer+1+i)%4 == 0 || (this->dealer+1+i)%4 == 2){
+      this->order_up = 02;
+    }
+    else if ((this->dealer+1+i)%4 == 1 || (this->dealer+1+i)%4 == 3){
+      this->order_up = 13;
+    }
+  };
   //Play the hand of 
   void play_hand(){
     cout << "playing hand" << endl;
   };
   //Play five tricks
   void trick(){
+    cout << "playing hand" << endl;
   };
 
 };

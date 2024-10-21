@@ -50,6 +50,7 @@ private:
   static const int PACK_SIZE = 24;
   std::array<Card, PACK_SIZE> cards;
   int next; //index of next card to be dealt
+  int count1 = 0;
 };
 
 #endif // PACK_HPP

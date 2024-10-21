@@ -17,3 +17,12 @@ make Player_public_tests.exe
 
 make Player_tests.exe
 ./Player_tests.exe
+
+make euchre.exe
+./euchre.exe pack.in noshuffle 1 Adi Simple Barbara Simple Chi-Chih Simple Dabbala Simple
+
+make euchre.exe
+./euchre.exe
+
+make euchre.exe
+./euchre.exe pack.in shuffle 10 Adi Simple Barbara Simple Chi-Chih Simple Dabbala Simple

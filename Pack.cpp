@@ -12,11 +12,10 @@ Pack::Pack()
         for (int j = NINE; j <= ACE; j++){
             Card card(static_cast<Rank>(j),static_cast<Suit>(i));
             //cout << i << " " << j << " " << (i*6)+(j-7) << endl;
-            this -> cards[(i*6)+(j-7)] = card;
+            this->cards[(i*6)+(j-7)] = card;
         }
     }
-    this -> next = 0;
-    //cout << cards[23] << endl;
+    this->next = 0;
 }
 
 Pack::Pack(std::istream& pack_input)
@@ -30,12 +29,17 @@ Pack::Pack(std::istream& pack_input)
         this -> cards[count] = card; 
         count ++;
     }
-    this -> next = 0;
+    this->next = 0;
 }
 
 Card Pack::deal_one(){
-    this -> next++;
-    return cards[next-1];
+    this->next++;
+    //delete this
+    this->count1++;
+    cout<< this->count1<< endl;
+    //delete this
+    return this->cards[next-1];
+
 }
 
 void Pack::reset() {
@@ -51,8 +55,8 @@ void Pack::shuffle(){
             shuffled_top[j] = this -> cards[j+12];
         }
         for (int k = 0; k < PACK_SIZE; k+=2){
-            this -> cards[k] = shuffled_top[k/2];
-            this -> cards[k+1] = shuffled_bottom[k/2];
+            this->cards[k] = shuffled_top[k/2];
+            this->cards[k+1] = shuffled_bottom[k/2];
             //cout << cards[k] << endl;
             //cout << cards[k+1] << endl;
         }

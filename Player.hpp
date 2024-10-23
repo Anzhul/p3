@@ -19,7 +19,7 @@ class Player {
   //EFFECTS returns player's name
   virtual const std::string & get_name() const = 0;
 
-  virtual void show_cards() = 0;
+  //virtual void show_cards() = 0;
 
   //REQUIRES player has less than MAX_HAND_SIZE cards
   //EFFECTS  adds Card c to Player's hand

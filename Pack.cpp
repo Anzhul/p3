@@ -11,7 +11,6 @@ Pack::Pack()
     for (int i = SPADES; i <= DIAMONDS; i++){
         for (int j = NINE; j <= ACE; j++){
             Card card(static_cast<Rank>(j),static_cast<Suit>(i));
-            //cout << i << " " << j << " " << (i*6)+(j-7) << endl;
             this->cards[(i*6)+(j-7)] = card;
         }
     }
@@ -57,8 +56,6 @@ void Pack::shuffle(){
         for (int k = 0; k < PACK_SIZE; k+=2){
             this->cards[k] = shuffled_top[k/2];
             this->cards[k+1] = shuffled_bottom[k/2];
-            //cout << cards[k] << endl;
-            //cout << cards[k+1] << endl;
         }
     }
 }

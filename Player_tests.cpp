@@ -221,23 +221,18 @@ TEST(add_and_discard){
   ASSERT_EQUAL(card_led1, nine_hearts); //check led card
   delete p1;
 
-  Player * p2 = Player_factory("p2", "Simple");
-  p2->add_card(Card(KING, SPADES));
-  p2->add_card(Card(ACE, SPADES));
-  p2->add_card(Card(QUEEN, SPADES));
-  p2->add_card(Card(JACK, CLUBS));
-  p2->add_card(Card(JACK, SPADES));
-  p2->add_and_discard(Card(QUEEN, HEARTS));
-  Card card_led21 = p2->lead_card(DIAMONDS);
-  Card ace_spades(ACE, SPADES);
-  Card queen_hearts(QUEEN, HEARTS);
-  ASSERT_EQUAL(card_led21, ace_spades); //check led card
-  Card card_led22 = p2->lead_card(CLUBS);
-  ASSERT_EQUAL(card_led22, ace_spades); //check led card
-  Card card_led23 = p2->lead_card(SPADES);
-  ASSERT_EQUAL(card_led23, queen_hearts); //check led card
-  delete p2;
 
+  Player * p2 = Player_factory("p2", "Simple");
+  p2->add_card(Card(KING, DIAMONDS));
+  p2->add_card(Card(QUEEN, DIAMONDS));
+  p2->add_card(Card(JACK, DIAMONDS));
+  p2->add_card(Card(TEN, DIAMONDS));
+  p2->add_card(Card(NINE, DIAMONDS));
+  p2->add_and_discard(Card(NINE, SPADES));
+  Card ace_hearts(ACE, HEARTS);
+  Card card_played21=p2->play_card(ace_hearts,SPADES); 
+  ASSERT_EQUAL(card_played21, Card(TEN, DIAMONDS));
+  delete p2; 
 
   Player * p3 = Player_factory("p3", "Simple");
   p3->add_card(Card(KING, CLUBS));
@@ -262,7 +257,20 @@ TEST(add_and_discard){
   Card nine_spades(NINE, SPADES);
   Card card_played41=p4->play_card(nine_spades,HEARTS); 
   ASSERT_EQUAL(card_played41, Card(TEN, CLUBS));
-  delete p4;
+  delete p4; 
+
+  Player * p5 = Player_factory("p5", "Simple");
+  p5->add_card(Card(NINE, HEARTS));
+  p5->add_card(Card(NINE, CLUBS));
+  p5->add_card(Card(NINE, DIAMONDS));
+  p5->add_card(Card(TEN, CLUBS));
+  p5->add_card(Card(TEN, DIAMONDS));
+  p5->add_and_discard(Card(NINE, SPADES));
+  Card ace_spades(ACE, SPADES);
+  Card card_played51=p5->play_card(ace_spades,SPADES); 
+  ASSERT_EQUAL(card_played51, Card(NINE, SPADES));
+  delete p5; 
+
 
 }
 

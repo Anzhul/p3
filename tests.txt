@@ -26,3 +26,15 @@ make euchre.exe
 
 make euchre.exe
 ./euchre.exe pack.in shuffle 10 Adi Simple Barbara Simple Chi-Chih Simple Dabbala Simple
+
+make euchre.exe
+./euchre.exe pack.in shuffle 10 Anzhu Human Barbara Simple Chi-Chih Simple Dabbala Simple
+
+make euchre.exe
+./euchre.exe pack.in shuffle 10 Edsger Simple Fran Simple Gabriel Simple Herb Simple 
+
+make euchre.exe
+./euchre.exe pack.in noshuffle 3 Ivan Human Judea Human Kunle Human Liskov Human 
+
+make euchre.exe
+./euchre.exe pack.in noshuffle 3 Ivan Human Judea Human Kunle Human Liskov Human < euchre_test50.in > euchre_test50.out

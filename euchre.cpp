@@ -9,7 +9,6 @@ using namespace std;
 #include <iostream>
 using namespace std;
 
-
 struct in_data {
   string shuffle;
   int points;
@@ -23,12 +22,11 @@ struct in_data {
   string strat4;
 };
 
-
 class Game { 
-
   public:   
   Game(in_data data){
     this->points = data.points;
+    this->dealer = 0;
     if (data.shuffle == "shuffle"){
       this->shuf = true;
     }
@@ -42,44 +40,41 @@ class Game {
   }; 
 
   void play(){
-    cout << "playing game" << endl;
-    /*
-    while (this->score1 < this->points && this->score2 < this->points){
-      cout << this->hand << endl;
-      trick1 = 0;
-      trick2 = 0;
+    while (this->score0_2 < this->points && this->score1_3 < this->points){
+      cout << "Hand " << this->hand << endl;
       if (this->shuf){
-        shuffle();
+        this->pack.shuffle();
       }
       deal();
       make_trump();
-      for(int i = 0; i < 5; i++){
-        trick();
-      } 
+      leader = (this->dealer+1)%4;
+      this->trick0_2 = 0;
+      this->trick1_3 = 0;
+      for (int i = 0; i < 5; i++){
+        int play_trick = trick();
+        trick_winner(play_trick);
+      }
+      hand_winner();
+      cout << this->players[0]->get_name() << " and " << 
+      this->players[2]->get_name() << " have " << this->score0_2 << " points" << endl;
+      cout << this->players[1]->get_name() << " and " << 
+      this->players[3]->get_name() << " have " << this->score1_3 << " points" << endl;
+      cout << endl;
+      this->dealer = (this->dealer+1)%4; 
       this->hand++;
-      if (dealer >= 3){
-        dealer = 0;
-      }
-      else{
-        dealer++;
-      }
+      this->pack.reset();
     }
-    cout << "game over" << endl;
+    if (this->score0_2 > this->score1_3){
+      cout << this->players[0]->get_name() << " and " << 
+      this->players[2]->get_name() << " win!" << endl;
+    }
+    else{
+      cout << this->players[1]->get_name() << " and " << 
+      this->players[3]->get_name() << " win!" << endl;
+    }
     for(size_t i = 0; i < players.size(); ++i){   
-      delete players[i]; 
-    }*/
-    deal();
-    make_trump();
-    for (int i = 0; i<5; i++){
-      trick();
+      delete this->players[i]; 
     }
-  this->dealer = 0;
-  this->trick1 = 0;
-  this->trick2 = 0;
-  this->score0_2 = 0;
-  this->score1_3 = 0; 
-  this->hand = 0;
-  this->order_up = 0;
   }
 
   private:   
@@ -87,10 +82,13 @@ class Game {
   Pack pack;   // ...
   int points;
   int dealer = 0;
-  int trick1 = 0;
-  int trick2 = 0;
+  int leader;
+  //Scores
+  int trick0_2 = 0;
+  int trick1_3 = 0;
   int score0_2 = 0;
   int score1_3 = 0; 
+  //Hand score
   int hand = 0;
   int round = 1;
   int order_up;
@@ -99,40 +97,40 @@ class Game {
   Suit trump;
   //Shuffles Deck
   void shuffle(){
-    cout << "shuffling deck" << endl;
+    //cout << "shuffling deck" << endl;
     this->pack.shuffle();
   };   
   //Deals cards 
   void deal(){
     //Identify dealer
-    this->dealer = 2;
+    cout << this->players[this->dealer]->get_name() << " deals" << endl;
     //Begin with player to the left of them
     for(int i = 0; i< 8; i++){
+      int offset = ((this->dealer+1+i)%4);
       if ((i%2 == 0 && i<4) || (i%2 == 1 && i>=4)){
-      cout << 3 << " ";
-        this->players[(this->dealer+1+i)%4]->add_card(this->pack.deal_one());
-        this->players[(this->dealer+1+i)%4]->add_card(this->pack.deal_one());
-        this->players[(this->dealer+1+i)%4]->add_card(this->pack.deal_one());
+        //cout << 3 << " " << "offset: " << offset << endl;
+        this->players[offset]->add_card(this->pack.deal_one());
+        this->players[offset]->add_card(this->pack.deal_one());
+        this->players[offset]->add_card(this->pack.deal_one());
       }
       else if ((i%2 == 1 && i<4) || (i%2 == 0 && i>=4)){
-        cout << 2 << " ";
-        this->players[(this->dealer+1+i)%4]->add_card(this->pack.deal_one());
-        this->players[(this->dealer+1+i)%4]->add_card(this->pack.deal_one());
+        //cout << 2 << " " << "offset: " << offset << endl;
+        this->players[offset]->add_card(this->pack.deal_one());
+        this->players[offset]->add_card(this->pack.deal_one());
       }
-      cout << "player: " << (this->dealer + 1 + i)%4 << endl; 
     }
     for(int i = 0; i< 4; i++){
-      cout << "player" << i << ": " << endl;
-      this->players[i]->show_cards();
+      //cout << "player" << i << ": " << endl;
+      //this->players[i]->show_cards();
     }
   };   
   //Round to determine who gets trump
   void make_trump(){
     Card upcard = this->pack.deal_one();
+    cout << upcard.get_rank() << " of " << upcard.get_suit() << " turned up" << endl;
     this->trump = upcard.get_suit();
-    cout << "upcard: " << this->trump << endl;
     this->round = 1;
-    int i = 0;\
+    int orderer = 0;
     for (int i = 0; i < 8; i++){
       if(i > 3){
         this->round = 2;
@@ -144,35 +142,113 @@ class Game {
       else{
         is_dealer = false;
       }
-      if (this->players[(this->dealer+1+i)%4]->make_trump(upcard, is_dealer, this->round, this->trump)){
+      if (this->players[(this->dealer+1+i)%4]->make_trump(
+        upcard, is_dealer, this->round, this->trump)){
+        orderer = i;
+        cout << this->players[(this->dealer+1+i)%4]->get_name() 
+        << " orders up " << this->trump << endl;
         if (this->round == 1){
           this->players[this->dealer]->add_and_discard(upcard);
         }
-        cout << (this->dealer+1+i)%4 << this->round << endl;
+        cout << endl;
         break; 
       }
+      else{
+        cout << this->players[(this->dealer+1+i)%4]->get_name() 
+        << " passes" << endl;
+      }
     }
-    cout << "trump suit: " << this->trump << endl;
+    if ((this->dealer+1+orderer)%4 == 0 || (this->dealer+1+orderer)%4 == 2){
+      this->order_up = 13;
+    }
+    else if ((this->dealer+1+orderer)%4 == 1 || (this->dealer+1+orderer)%4 == 3){
+      this->order_up = 24;
+    }
+    //cout << "trump suit: " << this->trump << endl;
     /*for(int i = 0; i< 4; i++){
       cout << "player" << i << ": " << endl;
       this->players[i]->show_cards();
     }*/
-    if ((this->dealer+1+i)%4 == 0 || (this->dealer+1+i)%4 == 2){
-      this->order_up = 02;
-    }
-    else if ((this->dealer+1+i)%4 == 1 || (this->dealer+1+i)%4 == 3){
-      this->order_up = 13;
-    }
-  };
-  //Play the hand of 
-  void play_hand(){
-    cout << "playing hand" << endl;
   };
   //Play five tricks
-  void trick(){
-    cout << "playing hand" << endl;
+  int trick(){
+    int winner = leader;
+    Card lead_card = this->players[leader]->lead_card(this->trump);
+    Card greatest = lead_card;
+    cout << lead_card.get_rank() << " of " << lead_card.get_suit() 
+    << " led by " << this->players[leader]->get_name() << endl;
+    for(int i = 0; i<3; i++){
+      //cout << "cards against: " << (leader+1+i)%4 << endl;
+      Card played = players[(leader+1+i)%4]->play_card(lead_card, this->trump);
+      cout << played.get_rank() << " of " << played.get_suit() 
+      << " played by " << players[(leader+1+i)%4]->get_name() << endl;
+      if(Card_less(greatest, played, lead_card, this->trump)){
+        greatest = played;
+        winner = (leader+1+i)%4;
+      }
+    }
+    cout << players[winner]->get_name() << " takes the trick" << endl;
+    cout << endl;
+    leader = winner;
+    return winner;
   };
-
+  void trick_winner(int tw){
+    if (tw == 0 || tw == 2){
+      this->trick0_2++;
+    }
+    else if (tw == 1 || tw == 3){
+      this->trick1_3++;
+    } 
+  };
+  void hand_winner(){
+    //cout << "0_2 score: " << this->trick0_2 << endl;
+    //cout << "1_3 score: " << this->trick1_3 << endl;
+    //cout << "order up: " << this->order_up << endl;
+    if (this->trick0_2 >= 5){
+      cout << this->players[0]->get_name() << " and "
+      << this->players[2] -> get_name() << " win the hand" << endl;
+      if(this->order_up == 13){
+        cout << "march! " << endl;
+      }
+      else if(this->order_up == 24){
+        cout << "euchred!" << endl;
+      }
+      this->score0_2+=2;
+    }
+    else if (this->trick1_3 >= 5){
+      cout << this->players[1]->get_name() << " and "
+      << this->players[3] -> get_name() << " win the hand" << endl;
+      if(this->order_up == 24){
+        cout << "march!" << endl;
+      }
+      else if(this->order_up == 13){
+        cout << "euchred!" << endl;
+      }
+      this->score1_3+=2;
+    }
+    else if (this->trick0_2 == 3 || this->trick0_2 == 4){
+      cout << this->players[0]->get_name() << " and "
+       << this->players[2] -> get_name() << " win the hand" << endl;
+      if(this->order_up == 13){
+        this->score0_2++;
+      }
+      else if(this->order_up == 24){
+        this->score0_2+=2;
+        cout << "euchred!" << endl;
+      }
+    }
+    else if (this->trick1_3 == 3 || this->trick1_3 == 4){
+      cout << this->players[1]->get_name() << " and "
+      << this->players[3] -> get_name() << " win the hand" << endl;
+      if(this->order_up == 24){
+        this->score1_3++;
+      }
+      else if(this->order_up == 13){
+        cout << "euchred!" << endl;
+        this->score1_3+=2;
+      }
+    }
+  };
 };
 
 
@@ -222,6 +298,10 @@ int main(int argc, char **argv) {
     return 1;
   }
 
+  for(int i = 0;i <12; i++){
+    cout<< argv[i] << " ";
+  }
+  cout << endl;
   Game game(data);
   game.play();
 }
